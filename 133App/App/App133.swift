@@ -1,14 +1,14 @@
 //
-//  _33AppApp.swift
+//  App133.swift
 //  133App
 //
-//  Created by yoonsmac on 11/1/25.
+//  메인 앱 파일
 //
 
 import SwiftUI
 
 @main
-struct _33AppApp: App {
+struct App133: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
