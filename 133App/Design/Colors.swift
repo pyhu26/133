@@ -19,6 +19,23 @@ extension Color {
 
     /// 메인 배경 (#F9F7F4)
     static let lightWarmGray = Color(hex: "F9F7F4")
+    
+    // MARK: - Adaptive Colors (Dark Mode Support)
+    
+    /// 메인 배경 (adaptive)
+    static var adaptiveBackground: Color {
+        Color(light: Color(hex: "F9F7F4"), dark: Color(hex: "1C1C1E"))
+    }
+    
+    /// 카드 배경 (adaptive)
+    static var adaptiveCardBackground: Color {
+        Color(light: .white, dark: Color(hex: "2C2C2E"))
+    }
+    
+    /// 세컨더리 배경 (adaptive)
+    static var adaptiveSecondaryBackground: Color {
+        Color(light: Color(hex: "F5E6D3"), dark: Color(hex: "3A3A3C"))
+    }
 
     // MARK: - Supporting Colors
 
@@ -31,7 +48,29 @@ extension Color {
     /// 정보 표시 (#C7E9F5)
     static let powderBlue = Color(hex: "C7E9F5")
 
-    // MARK: - Neutral Colors
+    // MARK: - Neutral Colors (Adaptive)
+
+    /// 주요 텍스트 (adaptive)
+    static var adaptiveText: Color {
+        Color(light: Color(hex: "4A4238"), dark: Color(hex: "F2F2F7"))
+    }
+
+    /// 보조 텍스트 (adaptive)
+    static var adaptiveSecondaryText: Color {
+        Color(light: Color(hex: "9B8F82"), dark: Color(hex: "AEAEB2"))
+    }
+
+    /// 비활성/플레이스홀더 (adaptive)
+    static var adaptiveTertiaryText: Color {
+        Color(light: Color(hex: "C5B9AC"), dark: Color(hex: "636366"))
+    }
+
+    /// 테두리 (adaptive)
+    static var adaptiveBorder: Color {
+        Color(light: Color(hex: "E0D5C7"), dark: Color(hex: "48484A"))
+    }
+    
+    // MARK: - Legacy Colors (for backwards compatibility)
 
     /// 주요 텍스트 (#4A4238)
     static let deepWarmGray = Color(hex: "4A4238")
@@ -115,5 +154,17 @@ extension Color {
             blue:  Double(b) / 255,
             opacity: Double(a) / 255
         )
+    }
+    
+    /// 라이트/다크 모드별 색상 생성
+    init(light: Color, dark: Color) {
+        self.init(UIColor { traitCollection in
+            switch traitCollection.userInterfaceStyle {
+            case .dark:
+                return UIColor(dark)
+            default:
+                return UIColor(light)
+            }
+        })
     }
 }

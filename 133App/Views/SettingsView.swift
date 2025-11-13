@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var notificationsEnabled = true
-    @State private var encouragementEnabled = true
-    @State private var darkModeEnabled = false
-    @State private var soundEnabled = true
+    @State private var settingsManager = SettingsManager()
+    @State private var showDeleteAlert = false
+    @State private var showResetAlert = false
 
     var body: some View {
         ZStack {
@@ -27,7 +26,7 @@ struct SettingsView: View {
                         .padding(.top, Spacing.screenTop)
 
                     // Profile Card
-                    ProfileCard()
+                    ProfileCard(userName: settingsManager.userName)
 
                     // Settings Sections
                     VStack(spacing: Spacing.lg) {
@@ -38,7 +37,7 @@ struct SettingsView: View {
                                 iconColor: .softPeach,
                                 title: "알림",
                                 description: "매일 아침 알림 받기",
-                                isOn: $notificationsEnabled
+                                isOn: $settingsManager.notificationsEnabled
                             )
 
                             SettingToggleItem(
@@ -46,7 +45,7 @@ struct SettingsView: View {
                                 iconColor: .gentleLavender,
                                 title: "응원 메시지",
                                 description: "힘이 되는 메시지 보기",
-                                isOn: $encouragementEnabled
+                                isOn: $settingsManager.encouragementEnabled
                             )
 
                             SettingToggleItem(
@@ -54,7 +53,7 @@ struct SettingsView: View {
                                 iconColor: .powderBlue,
                                 title: "사운드",
                                 description: "완료 시 효과음 재생",
-                                isOn: $soundEnabled
+                                isOn: $settingsManager.soundEnabled
                             )
 
                             SettingToggleItem(
@@ -62,7 +61,7 @@ struct SettingsView: View {
                                 iconColor: .deepWarmGray,
                                 title: "다크 모드",
                                 description: "어두운 화면 사용",
-                                isOn: $darkModeEnabled
+                                isOn: $settingsManager.darkModeEnabled
                             )
                         }
 
@@ -73,7 +72,10 @@ struct SettingsView: View {
                                 iconColor: .softMint,
                                 title: "데이터 내보내기",
                                 description: "내 기록을 저장하기"
-                            )
+                            ) {
+                                // TODO: 데이터 내보내기 기능
+                                print("데이터 내보내기")
+                            }
 
                             SettingNavigationItem(
                                 icon: "trash.fill",
@@ -81,7 +83,9 @@ struct SettingsView: View {
                                 title: "모든 데이터 삭제",
                                 description: "주의: 복구할 수 없습니다",
                                 isDestructive: true
-                            )
+                            ) {
+                                showDeleteAlert = true
+                            }
                         }
 
                         // Info Settings
@@ -91,21 +95,30 @@ struct SettingsView: View {
                                 iconColor: .powderBlue,
                                 title: "앱 정보",
                                 description: "버전 1.0.0"
-                            )
+                            ) {
+                                // TODO: 앱 정보 페이지
+                                print("앱 정보")
+                            }
 
                             SettingNavigationItem(
                                 icon: "doc.text.fill",
                                 iconColor: .mediumGray,
                                 title: "이용약관",
                                 description: nil
-                            )
+                            ) {
+                                // TODO: 이용약관 페이지
+                                print("이용약관")
+                            }
 
                             SettingNavigationItem(
                                 icon: "lock.fill",
                                 iconColor: .mediumGray,
                                 title: "개인정보 처리방침",
                                 description: nil
-                            )
+                            ) {
+                                // TODO: 개인정보 처리방침 페이지
+                                print("개인정보 처리방침")
+                            }
                         }
                     }
 
@@ -131,12 +144,31 @@ struct SettingsView: View {
                 .padding(.horizontal, Spacing.screenHorizontal)
             }
         }
+        .alert("모든 데이터 삭제", isPresented: $showDeleteAlert) {
+            Button("취소", role: .cancel) { }
+            Button("삭제", role: .destructive) {
+                deleteAllData()
+            }
+        } message: {
+            Text("모든 할일과 통계 데이터가 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.")
+        }
+    }
+    
+    // MARK: - Actions
+    
+    private func deleteAllData() {
+        // TODO: TodoViewModel과 StatsManager 인스턴스 접근하여 삭제
+        // 현재는 알림만 제거
+        settingsManager.notificationManager.removeAllNotifications()
+        print("모든 데이터 삭제")
     }
 }
 
 // MARK: - Profile Card
 
 struct ProfileCard: View {
+    let userName: String
+    
     var body: some View {
         VStack(spacing: Spacing.lg) {
             // Avatar
@@ -152,7 +184,7 @@ struct ProfileCard: View {
             }
 
             // Name
-            Text("윤프로")
+            Text(userName)
                 .textStyle(.headingMedium)
                 .foregroundColor(.white)
 
@@ -267,11 +299,10 @@ struct SettingNavigationItem: View {
     let title: String
     let description: String?
     var isDestructive: Bool = false
+    let action: () -> Void
 
     var body: some View {
-        Button(action: {
-            // Navigation or action
-        }) {
+        Button(action: action) {
             HStack(spacing: Spacing.md) {
                 // Icon Box
                 ZStack {

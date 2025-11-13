@@ -12,12 +12,14 @@ import Observation
 @Observable
 class TodoViewModel {
     var todos: [TodoItem] = []
+    var statsManager = StatsManager()
 
     /// 하루 최대 할 일 개수
     private let maxTodos = 3
 
     init() {
         loadTodos()
+        updateStats()
     }
 
     // MARK: - Computed Properties
@@ -62,6 +64,7 @@ class TodoViewModel {
 
         todos.append(newTodo)
         saveTodos()
+        updateStats()
     }
 
     /// 할 일 완료 토글
@@ -75,6 +78,7 @@ class TodoViewModel {
         }
 
         saveTodos()
+        updateStats()
     }
 
     /// 할 일 완료 처리 (타이머에서 사용)
@@ -83,18 +87,39 @@ class TodoViewModel {
         
         todos[index].complete(actualMinutes: actualMinutes)
         saveTodos()
+        updateStats()
+    }
+    
+    /// 할 일 수정
+    func updateTodo(_ todo: TodoItem, title: String, estimatedMinutes: Int, memo: String?) {
+        guard let index = todos.firstIndex(where: { $0.id == todo.id }) else { return }
+        
+        // 완료된 할일은 수정 불가
+        guard !todos[index].isCompleted else {
+            print("완료된 할일은 수정할 수 없습니다")
+            return
+        }
+        
+        todos[index].title = title
+        todos[index].estimatedMinutes = estimatedMinutes
+        todos[index].memo = memo
+        
+        saveTodos()
+        updateStats()
     }
 
     /// 할 일 삭제
     func deleteTodo(_ todo: TodoItem) {
         todos.removeAll { $0.id == todo.id }
         saveTodos()
+        updateStats()
     }
 
     /// 모든 할 일 삭제
     func clearAllTodos() {
         todos.removeAll()
         saveTodos()
+        updateStats()
     }
 
     // MARK: - Encouragement Messages
@@ -173,5 +198,13 @@ class TodoViewModel {
     func loadSampleData() {
         todos = TodoItem.samples
         saveTodos()
+        updateStats()
+    }
+    
+    // MARK: - Stats
+    
+    /// 통계 업데이트
+    private func updateStats() {
+        statsManager.updateTodayStats(todos: todos)
     }
 }

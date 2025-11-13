@@ -132,13 +132,13 @@ struct TextStyleModifier: ViewModifier {
         var defaultColor: Color {
             switch self {
             case .displayLarge, .headingLarge, .headingMedium, .headingSmall, .bodyLarge, .bodyRegular:
-                return .deepWarmGray
+                return .adaptiveText
             case .bodySmall, .caption, .captionSmall:
-                return .mediumGray
+                return .adaptiveSecondaryText
             case .buttonText:
                 return .white
             case .timerLarge, .statsValue:
-                return .deepWarmGray
+                return .adaptiveText
             }
         }
     }

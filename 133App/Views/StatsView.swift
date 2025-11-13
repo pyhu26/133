@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct StatsView: View {
+    @State private var viewModel = TodoViewModel()
+    
     var body: some View {
         ZStack {
             // Background
-            Color.lightWarmGray
+            Color.adaptiveBackground
                 .ignoresSafeArea()
 
             ScrollView {
@@ -22,13 +24,13 @@ struct StatsView: View {
                         .padding(.top, Spacing.screenTop)
 
                     // Week Progress Card
-                    WeekProgressCard()
+                    WeekProgressCard(weeklyStats: viewModel.statsManager.getThisWeekStats())
 
                     // Stats Grid
-                    StatsGrid()
+                    StatsGrid(statsManager: viewModel.statsManager)
 
                     // Encouragement Card
-                    EncouragementCard(message: "꾸준함이 재능이야!")
+                    EncouragementCard(message: getEncouragementMessage())
 
                     // Weekly Timeline (Optional)
                     // WeeklyTimeline()
@@ -39,18 +41,32 @@ struct StatsView: View {
             }
         }
     }
+    
+    private func getEncouragementMessage() -> String {
+        let streak = viewModel.statsManager.getStreakDays()
+        let totalStats = viewModel.statsManager.getTotalStats()
+        
+        if streak >= 7 {
+            return "🔥 \(streak)일 연속! 정말 대단해요!"
+        } else if streak >= 3 {
+            return "💪 \(streak)일 연속 실천 중! 계속 가보자!"
+        } else if totalStats.completedTodos >= 10 {
+            return "🌟 벌써 \(totalStats.completedTodos)개나 해냈어요!"
+        } else if totalStats.completedTodos > 0 {
+            return "꾸준함이 재능이야!"
+        } else {
+            return "오늘부터 시작해볼까요?"
+        }
+    }
 }
 
 // MARK: - Week Progress Card
 
 struct WeekProgressCard: View {
-    // Sample data
+    let weeklyStats: WeeklyStats
+    
+    // 요일 이름
     let weekDays = ["월", "화", "수", "목", "금", "토", "일"]
-    let completedDays = [true, true, false, true, true, false, false]
-
-    var completedCount: Int {
-        completedDays.filter { $0 }.count
-    }
 
     var body: some View {
         VStack(spacing: Spacing.lg) {
@@ -61,18 +77,18 @@ struct WeekProgressCard: View {
 
                 Spacer()
 
-                Text("12월 16일 - 22일")
+                Text(dateRangeText)
                     .textStyle(.caption)
                     .foregroundColor(.mediumGray)
             }
 
             // Day Dots
             HStack(spacing: 12) {
-                ForEach(Array(weekDays.enumerated()), id: \.offset) { index, day in
+                ForEach(Array(weeklyStats.dailyStats.enumerated()), id: \.offset) { index, dayStat in
                     DayDot(
-                        day: day,
-                        isCompleted: completedDays[index],
-                        isToday: index == 3 // Sample: 목요일이 오늘
+                        day: weekDays[index],
+                        isCompleted: dayStat.isAllCompleted,
+                        isToday: Calendar.current.isDateInToday(dayStat.date)
                     )
                 }
             }
@@ -83,7 +99,7 @@ struct WeekProgressCard: View {
                     .font(.system(size: 16))
                     .foregroundColor(.softPeach)
 
-                Text("\(completedCount)일 실천했어요!")
+                Text("\(weeklyStats.completedDaysCount)일 실천했어요!")
                     .textStyle(.bodyLarge)
                     .foregroundColor(.deepWarmGray)
             }
@@ -96,6 +112,15 @@ struct WeekProgressCard: View {
         .background(Color.white)
         .xLargeRadius()
         .lightShadow()
+    }
+    
+    private var dateRangeText: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M월 d일"
+        let startText = formatter.string(from: weeklyStats.startDate)
+        formatter.dateFormat = "d일"
+        let endText = formatter.string(from: weeklyStats.endDate)
+        return "\(startText) - \(endText)"
     }
 }
 
@@ -146,7 +171,13 @@ struct DayDot: View {
 // MARK: - Stats Grid
 
 struct StatsGrid: View {
+    let statsManager: StatsManager
+    
     var body: some View {
+        let totalStats = statsManager.getTotalStats()
+        let weeklyStats = statsManager.getThisWeekStats()
+        let streak = statsManager.getStreakDays()
+        
         LazyVGrid(
             columns: [
                 GridItem(.flexible(), spacing: Spacing.md),
@@ -156,28 +187,28 @@ struct StatsGrid: View {
         ) {
             StatCard(
                 icon: "checkmark.circle.fill",
-                value: "23",
+                value: "\(totalStats.completedTodos)",
                 label: "완료한 일",
                 color: .gentleLavender
             )
 
             StatCard(
                 icon: "timer",
-                value: "89",
+                value: "\(totalStats.focusMinutes)",
                 label: "집중 시간 (분)",
                 color: .softMint
             )
 
             StatCard(
                 icon: "flame.fill",
-                value: "5",
+                value: "\(streak)",
                 label: "연속 실천 일수",
                 color: .softPeach
             )
 
             StatCard(
                 icon: "chart.bar.fill",
-                value: "78%",
+                value: "\(totalStats.completionRate)%",
                 label: "완료율",
                 color: .powderBlue
             )

@@ -17,6 +17,14 @@ struct TimerView: View {
     @State private var timer: Timer?
     @State private var startTime: Date?
     @State private var elapsedSeconds: Int = 0
+    
+    // 백그라운드 타이머 지원을 위한 변수들
+    @State private var sessionStartTime: Date?
+    @State private var pausedTime: Date?
+    @State private var totalPausedDuration: TimeInterval = 0
+    
+    // 알림 관리자
+    private let notificationManager = NotificationManager.shared
 
     init(todo: TodoItem, isPresented: Binding<Bool>, onComplete: ((TodoItem, Int) -> Void)? = nil) {
         self.todo = todo
@@ -166,40 +174,96 @@ struct TimerView: View {
 
     private func startTimer() {
         isRunning = true
-        if startTime == nil {
-            startTime = Date()
+        
+        // 햅틱 & 사운드 피드백
+        HapticManager.shared.timerStart()
+        SoundManager.shared.playTimerStart()
+        
+        // 세션 시작 시간 기록
+        if sessionStartTime == nil {
+            sessionStartTime = Date()
         }
+        
+        // 일시정지에서 재개하는 경우
+        if let paused = pausedTime {
+            let pauseDuration = Date().timeIntervalSince(paused)
+            totalPausedDuration += pauseDuration
+            pausedTime = nil
+        }
+        
+        // 백그라운드 알림 스케줄
+        Task {
+            await notificationManager.scheduleTimerCompletionNotification(
+                todoTitle: todo.title,
+                delay: TimeInterval(timeRemaining)
+            )
+        }
+        
+        // 타이머 시작
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            if timeRemaining > 0 {
-                timeRemaining -= 1
-                elapsedSeconds += 1
-            } else {
-                completeTask()
-            }
+            updateTimer()
+        }
+    }
+    
+    private func updateTimer() {
+        guard let sessionStart = sessionStartTime else { return }
+        
+        // 실제 경과 시간 계산 (일시정지 시간 제외)
+        let totalElapsed = Date().timeIntervalSince(sessionStart) - totalPausedDuration
+        elapsedSeconds = Int(totalElapsed)
+        
+        // 남은 시간 계산
+        let newTimeRemaining = totalSeconds - elapsedSeconds
+        
+        if newTimeRemaining > 0 {
+            timeRemaining = newTimeRemaining
+        } else {
+            timeRemaining = 0
+            completeTask()
         }
     }
 
     private func pauseTimer() {
         isRunning = false
+        pausedTime = Date()
         timer?.invalidate()
         timer = nil
+        
+        // 햅틱 피드백
+        HapticManager.shared.timerStop()
+        
+        // 알림 취소
+        notificationManager.cancelTimerCompletionNotification()
     }
 
     private func stopTimer() {
         isRunning = false
         timer?.invalidate()
         timer = nil
+        pausedTime = nil
+        
+        // 알림 취소
+        notificationManager.cancelTimerCompletionNotification()
     }
 
     private func resetTimer() {
         stopTimer()
         timeRemaining = totalSeconds
         elapsedSeconds = 0
-        startTime = nil
+        sessionStartTime = nil
+        totalPausedDuration = 0
+        pausedTime = nil
+        
+        // 햅틱 피드백
+        HapticManager.shared.medium()
     }
 
     private func completeTask() {
         stopTimer()
+        
+        // 햅틱 & 사운드 피드백
+        HapticManager.shared.timerComplete()
+        SoundManager.shared.playTimerComplete()
         
         // 실제로 작업한 시간(분) 계산
         let actualMinutes = Int(ceil(Double(elapsedSeconds) / 60.0))
@@ -209,6 +273,47 @@ struct TimerView: View {
         
         // 완료 처리 로직 추가 가능
         isPresented = false
+    }
+    
+    // MARK: - Background Support
+    
+    private func handleScenePhaseChange(oldPhase: ScenePhase, newPhase: ScenePhase) {
+        switch newPhase {
+        case .background:
+            // 백그라운드로 이동
+            if isRunning {
+                print("⚠️ App moved to background while timer is running")
+            }
+            
+        case .active:
+            // 포그라운드로 복귀
+            if isRunning {
+                print("✅ App returned to foreground, updating timer...")
+                // 타이머 재시작 (정확한 시간으로 업데이트)
+                timer?.invalidate()
+                updateTimer() // 즉시 한 번 업데이트
+                timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+                    updateTimer()
+                }
+                
+                // 알림 재스케줄
+                if timeRemaining > 0 {
+                    Task {
+                        await notificationManager.scheduleTimerCompletionNotification(
+                            todoTitle: todo.title,
+                            delay: TimeInterval(timeRemaining)
+                        )
+                    }
+                }
+            }
+            
+        case .inactive:
+            // 전환 상태 (무시)
+            break
+            
+        @unknown default:
+            break
+        }
     }
 }
 

@@ -9,14 +9,19 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var viewModel = TodoViewModel()
+    @State private var settingsManager = SettingsManager()
     @State private var showAddTodo = false
     @State private var showTimer = false
     @State private var selectedTodo: TodoItem?
+    @State private var showEditTodo = false
+    @State private var editingTodo: TodoItem?
+    @State private var showDeleteAlert = false
+    @State private var deletingTodo: TodoItem?
 
     var body: some View {
         ZStack {
             // Background
-            Color.lightWarmGray
+            Color.adaptiveBackground
                 .ignoresSafeArea()
 
             ScrollView {
@@ -33,6 +38,14 @@ struct HomeView: View {
                             selectedTodo = todo
                             showTimer = true
                             print("🔔 showTimer set to true, selectedTodo: \(selectedTodo?.title ?? "nil")")
+                        },
+                        onTodoEdit: { todo in
+                            editingTodo = todo
+                            showEditTodo = true
+                        },
+                        onTodoDelete: { todo in
+                            deletingTodo = todo
+                            showDeleteAlert = true
                         }
                     )
 
@@ -47,7 +60,9 @@ struct HomeView: View {
                     }
 
                     // Encouragement Card
-                    EncouragementCard(message: viewModel.getEncouragementMessage())
+                    if settingsManager.encouragementEnabled {
+                        EncouragementCard(message: viewModel.getEncouragementMessage())
+                    }
 
                     Spacer(minLength: Spacing.screenBottom)
                 }
@@ -63,6 +78,26 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showAddTodo) {
             AddTodoView(viewModel: viewModel, isPresented: $showAddTodo)
+        }
+        .sheet(isPresented: $showEditTodo) {
+            if let todo = editingTodo {
+                EditTodoView(viewModel: viewModel, todo: todo, isPresented: $showEditTodo)
+            }
+        }
+        .alert("할일 삭제", isPresented: $showDeleteAlert) {
+            Button("취소", role: .cancel) { }
+            Button("삭제", role: .destructive) {
+                if let todo = deletingTodo {
+                    withAnimation {
+                        viewModel.deleteTodo(todo)
+                    }
+                    HapticManager.shared.success()
+                }
+            }
+        } message: {
+            if let todo = deletingTodo {
+                Text("'\(todo.title)'을(를) 삭제하시겠습니까?")
+            }
         }
         .fullScreenCover(isPresented: $showTimer) {
             if let todo = selectedTodo {
@@ -119,6 +154,8 @@ struct GreetingHeaderView: View {
 struct TodoListView: View {
     var viewModel: TodoViewModel
     let onTodoTap: (TodoItem) -> Void
+    let onTodoEdit: (TodoItem) -> Void
+    let onTodoDelete: (TodoItem) -> Void
 
     var body: some View {
         VStack(spacing: Spacing.md) {
@@ -127,6 +164,10 @@ struct TodoListView: View {
                     viewModel.toggleComplete(todo)
                 } onTap: {
                     onTodoTap(todo)
+                } onEdit: {
+                    onTodoEdit(todo)
+                } onDelete: {
+                    onTodoDelete(todo)
                 }
                 .transition(.asymmetric(
                     insertion: .scale.combined(with: .opacity),
