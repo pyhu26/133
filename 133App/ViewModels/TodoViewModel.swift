@@ -77,6 +77,14 @@ class TodoViewModel {
         saveTodos()
     }
 
+    /// 할 일 완료 처리 (타이머에서 사용)
+    func completeTodo(_ todo: TodoItem, actualMinutes: Int) {
+        guard let index = todos.firstIndex(where: { $0.id == todo.id }) else { return }
+        
+        todos[index].complete(actualMinutes: actualMinutes)
+        saveTodos()
+    }
+
     /// 할 일 삭제
     func deleteTodo(_ todo: TodoItem) {
         todos.removeAll { $0.id == todo.id }

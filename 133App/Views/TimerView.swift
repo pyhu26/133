@@ -10,14 +10,18 @@ import SwiftUI
 struct TimerView: View {
     let todo: TodoItem
     @Binding var isPresented: Bool
+    var onComplete: ((TodoItem, Int) -> Void)?
 
     @State private var timeRemaining: Int
     @State private var isRunning = false
     @State private var timer: Timer?
+    @State private var startTime: Date?
+    @State private var elapsedSeconds: Int = 0
 
-    init(todo: TodoItem, isPresented: Binding<Bool>) {
+    init(todo: TodoItem, isPresented: Binding<Bool>, onComplete: ((TodoItem, Int) -> Void)? = nil) {
         self.todo = todo
         self._isPresented = isPresented
+        self.onComplete = onComplete
         self._timeRemaining = State(initialValue: todo.estimatedMinutes * 60)
     }
 
@@ -105,7 +109,6 @@ struct TimerView: View {
                                 .font(.timerLarge)
                                 .foregroundColor(.white)
                                 .shadow(color: Color.black.opacity(0.1), radius: 10, y: 4)
-                                .monospacedDigit()
                         }
 
                         if progress >= 1.0 {
@@ -163,9 +166,13 @@ struct TimerView: View {
 
     private func startTimer() {
         isRunning = true
+        if startTime == nil {
+            startTime = Date()
+        }
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             if timeRemaining > 0 {
                 timeRemaining -= 1
+                elapsedSeconds += 1
             } else {
                 completeTask()
             }
@@ -187,10 +194,19 @@ struct TimerView: View {
     private func resetTimer() {
         stopTimer()
         timeRemaining = totalSeconds
+        elapsedSeconds = 0
+        startTime = nil
     }
 
     private func completeTask() {
         stopTimer()
+        
+        // 실제로 작업한 시간(분) 계산
+        let actualMinutes = Int(ceil(Double(elapsedSeconds) / 60.0))
+        
+        // 완료 콜백 호출
+        onComplete?(todo, actualMinutes)
+        
         // 완료 처리 로직 추가 가능
         isPresented = false
     }
@@ -266,6 +282,9 @@ struct AnimatedGradientBackground: View {
 #Preview {
     TimerView(
         todo: TodoItem.sample1,
-        isPresented: .constant(true)
+        isPresented: .constant(true),
+        onComplete: { todo, actualMinutes in
+            print("Preview: Completed \(todo.title) in \(actualMinutes) minutes")
+        }
     )
 }

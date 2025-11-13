@@ -10,6 +10,7 @@ import SwiftUI
 struct TodoCard: View {
     let todo: TodoItem
     let onToggle: () -> Void
+    var onTap: (() -> Void)? = nil
 
     @State private var isPressed = false
 
@@ -65,9 +66,16 @@ struct TodoCard: View {
         .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
         .opacity(todo.isCompleted ? 0.6 : 1.0)
         .onTapGesture {
+            print("🎯 Card tapped: \(todo.title), isCompleted: \(todo.isCompleted)")
+            guard !todo.isCompleted else {
+                print("⚠️ Todo is completed, ignoring tap")
+                return
+            }
             isPressed = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 isPressed = false
+                print("✅ Calling onTap closure")
+                onTap?()
             }
         }
     }

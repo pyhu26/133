@@ -29,8 +29,10 @@ struct HomeView: View {
                     TodoListView(
                         viewModel: viewModel,
                         onTodoTap: { todo in
+                            print("🔔 Todo tapped: \(todo.title)")
                             selectedTodo = todo
                             showTimer = true
+                            print("🔔 showTimer set to true, selectedTodo: \(selectedTodo?.title ?? "nil")")
                         }
                     )
 
@@ -52,13 +54,39 @@ struct HomeView: View {
                 .padding(.horizontal, Spacing.screenHorizontal)
             }
         }
+        .onAppear {
+            // 개발용: 할일이 없으면 샘플 데이터 로드
+            if viewModel.todos.isEmpty {
+                print("📝 Loading sample data...")
+                viewModel.loadSampleData()
+            }
+        }
         .sheet(isPresented: $showAddTodo) {
             AddTodoView(viewModel: viewModel, isPresented: $showAddTodo)
         }
         .fullScreenCover(isPresented: $showTimer) {
             if let todo = selectedTodo {
-                TimerView(todo: todo, isPresented: $showTimer)
+                TimerView(
+                    todo: todo,
+                    isPresented: $showTimer,
+                    onComplete: { completedTodo, actualMinutes in
+                        print("✅ Task completed: \(completedTodo.title), actual time: \(actualMinutes) minutes")
+                        viewModel.completeTodo(completedTodo, actualMinutes: actualMinutes)
+                    }
+                )
+                .onAppear {
+                    print("🚀 TimerView appeared with todo: \(todo.title)")
+                }
+            } else {
+                Text("No todo selected")
+                    .foregroundColor(.red)
+                    .onAppear {
+                        print("❌ No todo selected!")
+                    }
             }
+        }
+        .onChange(of: showTimer) { oldValue, newValue in
+            print("📊 showTimer changed from \(oldValue) to \(newValue)")
         }
     }
 }
@@ -97,6 +125,8 @@ struct TodoListView: View {
             ForEach(viewModel.todos) { todo in
                 TodoCard(todo: todo) {
                     viewModel.toggleComplete(todo)
+                } onTap: {
+                    onTodoTap(todo)
                 }
                 .transition(.asymmetric(
                     insertion: .scale.combined(with: .opacity),
