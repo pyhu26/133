@@ -10,7 +10,6 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedTab = 0
     @State private var settingsManager = SettingsManager()
-    @Environment(\.colorScheme) private var systemColorScheme
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -39,7 +38,8 @@ struct ContentView: View {
                 .tag(2)
         }
         .accentColor(.softPeach)
-        .preferredColorScheme(settingsManager.darkModeEnabled ? .dark : nil)
+        .environment(settingsManager)
+        .preferredColorScheme(settingsManager.darkModeEnabled ? .dark : .light)
     }
 }
 

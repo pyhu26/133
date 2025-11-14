@@ -64,17 +64,17 @@ struct EditTodoView: View {
                         VStack(alignment: .leading, spacing: Spacing.xs) {
                             Text("할 일")
                                 .textStyle(.bodySmall)
-                                .foregroundColor(.deepWarmGray)
+                                .foregroundColor(.adaptiveSecondaryText)
 
                             TextField("예: 아침 스트레칭하기", text: $todoTitle)
                                 .textStyle(.bodyRegular)
                                 .padding(Spacing.md)
-                                .background(Color.white)
+                                .background(Color.adaptiveInputBackground)
                                 .mediumRadius()
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(
-                                            isTitleFocused ? Color.softPeach : Color.borderGray,
+                                            isTitleFocused ? Color.softPeach : Color.adaptiveBorder,
                                             lineWidth: 2
                                         )
                                 )
@@ -86,7 +86,7 @@ struct EditTodoView: View {
                         VStack(alignment: .leading, spacing: Spacing.xs) {
                             Text("예상 시간")
                                 .textStyle(.bodySmall)
-                                .foregroundColor(.deepWarmGray)
+                                .foregroundColor(.adaptiveSecondaryText)
 
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Spacing.sm), count: 3), spacing: Spacing.sm) {
                                 ForEach(timeOptions, id: \.self) { minutes in
@@ -106,17 +106,17 @@ struct EditTodoView: View {
                         VStack(alignment: .leading, spacing: Spacing.xs) {
                             Text("메모 (선택)")
                                 .textStyle(.bodySmall)
-                                .foregroundColor(.mediumGray)
+                                .foregroundColor(.adaptiveSecondaryText)
 
                             TextField("간단한 메모를 남겨보세요", text: $memo, axis: .vertical)
                                 .textStyle(.bodySmall)
                                 .lineLimit(2...4)
                                 .padding(Spacing.md)
-                                .background(Color.white)
+                                .background(Color.adaptiveInputBackground)
                                 .mediumRadius()
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color.borderGray, lineWidth: 1.5)
+                                        .stroke(Color.adaptiveBorder, lineWidth: 1.5)
                                 )
                         }
                     }
@@ -147,7 +147,7 @@ struct EditTodoView: View {
                 }
                 .padding(Spacing.xl)
                 .background(
-                    Color.lightWarmGray
+                    Color.adaptiveSecondaryBackground
                         .clipShape(
                             .rect(
                                 topLeadingRadius: 24,
@@ -183,7 +183,7 @@ struct EditTodoView: View {
 
 #Preview {
     ZStack {
-        Color.lightWarmGray
+        Color.adaptiveBackground
             .ignoresSafeArea()
 
         Text("Home Screen")

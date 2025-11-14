@@ -118,6 +118,11 @@ class StatsManager {
         return (totalCompleted, totalMinutes, completionRate)
     }
     
+    /// 모든 통계 데이터 가져오기 (내보내기용)
+    func getAllStats() -> [DailyStats] {
+        return dailyStatsHistory.sorted { $0.date > $1.date }
+    }
+    
     /// 오늘의 통계 업데이트
     func updateTodayStats(todos: [TodoItem]) {
         let calendar = Calendar.current

@@ -107,4 +107,19 @@ class HapticManager {
     func timerStop() {
         soft()
     }
+    
+    /// 축하 패턴 (완료 축하 화면)
+    func celebration() {
+        // 강렬한 3연타
+        heavy()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.heavy()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.heavy()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            self.success()
+        }
+    }
 }

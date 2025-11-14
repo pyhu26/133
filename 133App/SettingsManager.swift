@@ -19,6 +19,8 @@ class SettingsManager {
         static let soundEnabled = "settings_sound_enabled"
         static let darkModeEnabled = "settings_dark_mode_enabled"
         static let userName = "settings_user_name"
+        static let userProfileIcon = "settings_user_profile_icon"
+        static let userProfileImageData = "settings_user_profile_image_data"
     }
     
     // MARK: - Properties
@@ -62,6 +64,20 @@ class SettingsManager {
         }
     }
     
+    /// 사용자 프로필 아이콘
+    var userProfileIcon: String {
+        didSet {
+            userDefaults.set(userProfileIcon, forKey: Keys.userProfileIcon)
+        }
+    }
+    
+    /// 사용자 프로필 이미지 데이터
+    var userProfileImageData: Data? {
+        didSet {
+            userDefaults.set(userProfileImageData, forKey: Keys.userProfileImageData)
+        }
+    }
+    
     var notificationManager: NotificationManager
     
     // MARK: - Initialization
@@ -75,6 +91,8 @@ class SettingsManager {
         self.soundEnabled = userDefaults.bool(forKey: Keys.soundEnabled)
         self.darkModeEnabled = userDefaults.bool(forKey: Keys.darkModeEnabled)
         self.userName = userDefaults.string(forKey: Keys.userName) ?? "윤프로"
+        self.userProfileIcon = userDefaults.string(forKey: Keys.userProfileIcon) ?? "person.fill"
+        self.userProfileImageData = userDefaults.data(forKey: Keys.userProfileImageData)
         
         // 기본값 설정 (첫 실행)
         if userDefaults.object(forKey: Keys.notificationsEnabled) == nil {
@@ -103,5 +121,7 @@ class SettingsManager {
         soundEnabled = true
         darkModeEnabled = false
         userName = "윤프로"
+        userProfileIcon = "person.fill"
+        userProfileImageData = nil
     }
 }

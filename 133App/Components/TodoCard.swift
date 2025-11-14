@@ -170,5 +170,5 @@ struct ScaleButtonStyle: ButtonStyle {
         )
     }
     .padding()
-    .background(Color.lightWarmGray)
+    .background(Color.adaptiveBackground)
 }

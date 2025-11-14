@@ -27,7 +27,10 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: Spacing.xl) {
                     // Greeting Header
-                    GreetingHeaderView(viewModel: viewModel)
+                    GreetingHeaderView(
+                        viewModel: viewModel,
+                        userName: settingsManager.userName
+                    )
                         .padding(.top, Spacing.screenTop)
 
                     // Todo List
@@ -130,18 +133,19 @@ struct HomeView: View {
 
 struct GreetingHeaderView: View {
     var viewModel: TodoViewModel
+    var userName: String
 
     var body: some View {
         VStack(spacing: Spacing.xs) {
             HStack(spacing: Spacing.xs) {
-                Text(viewModel.getGreeting().icon)
+                Text(viewModel.getGreeting(userName: userName).icon)
                     .font(.system(size: 28))
 
-                Text(viewModel.getGreeting().message)
+                Text(viewModel.getGreeting(userName: userName).message)
                     .textStyle(.headingLarge)
             }
 
-            Text(viewModel.getGreeting().subtitle)
+            Text(viewModel.getGreeting(userName: userName).subtitle)
                 .textStyle(.bodySmall)
                 .foregroundColor(.mediumGray)
         }

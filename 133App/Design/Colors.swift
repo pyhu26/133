@@ -24,17 +24,27 @@ extension Color {
     
     /// 메인 배경 (adaptive)
     static var adaptiveBackground: Color {
-        Color(light: Color(hex: "F9F7F4"), dark: Color(hex: "1C1C1E"))
+        Color(light: Color(hex: "F9F7F4"), dark: Color(hex: "000000"))
     }
     
     /// 카드 배경 (adaptive)
     static var adaptiveCardBackground: Color {
-        Color(light: .white, dark: Color(hex: "2C2C2E"))
+        Color(light: .white, dark: Color(hex: "1C1C1E"))
     }
     
     /// 세컨더리 배경 (adaptive)
     static var adaptiveSecondaryBackground: Color {
-        Color(light: Color(hex: "F5E6D3"), dark: Color(hex: "3A3A3C"))
+        Color(light: Color(hex: "F5E6D3"), dark: Color(hex: "2C2C2E"))
+    }
+    
+    /// 입력 필드 배경 (adaptive)
+    static var adaptiveInputBackground: Color {
+        Color(light: .white, dark: Color(hex: "1C1C1E"))
+    }
+    
+    /// 카드 구분선 (adaptive)
+    static var adaptiveDivider: Color {
+        Color(light: Color(hex: "F5E6D3"), dark: Color(hex: "38383A"))
     }
 
     // MARK: - Supporting Colors
@@ -47,6 +57,9 @@ extension Color {
 
     /// 정보 표시 (#C7E9F5)
     static let powderBlue = Color(hex: "C7E9F5")
+    
+    /// Pale Yellow (#FFF9C4)
+    static let paleYellow = Color(hex: "FFF9C4")
 
     // MARK: - Neutral Colors (Adaptive)
 

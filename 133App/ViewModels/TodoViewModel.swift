@@ -125,18 +125,18 @@ class TodoViewModel {
     // MARK: - Encouragement Messages
 
     /// 시간대별 인사말
-    func getGreeting() -> (icon: String, message: String, subtitle: String) {
+    func getGreeting(userName: String = "윤프로") -> (icon: String, message: String, subtitle: String) {
         let hour = Calendar.current.component(.hour, from: Date())
 
         switch hour {
         case 5..<12:
-            return ("☀️", "좋은 아침, 윤프로님", "오늘도 천천히 시작해요")
+            return ("☀️", "좋은 아침, \(userName)님", "오늘도 천천히 시작해요")
         case 12..<17:
-            return ("🌤️", "좋은 오후, 윤프로님", "오늘도 잘 지내고 있나요?")
+            return ("🌤️", "좋은 오후, \(userName)님", "오늘도 잘 지내고 있나요?")
         case 17..<21:
-            return ("🌆", "좋은 저녁, 윤프로님", "하루 마무리 잘하고 있나요?")
+            return ("🌆", "좋은 저녁, \(userName)님", "하루 마무리 잘하고 있나요?")
         default:
-            return ("🌙", "편안한 밤, 윤프로님", "오늘도 수고 많았어요")
+            return ("🌙", "편안한 밤, \(userName)님", "오늘도 수고 많았어요")
         }
     }
 

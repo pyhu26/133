@@ -23,6 +23,10 @@ struct TimerView: View {
     @State private var pausedTime: Date?
     @State private var totalPausedDuration: TimeInterval = 0
     
+    // 완료 축하 화면
+    @State private var showCompletionView = false
+    @State private var completedActualMinutes: Int = 0
+    
     // 알림 관리자
     private let notificationManager = NotificationManager.shared
 
@@ -167,6 +171,23 @@ struct TimerView: View {
                 }
                 .padding(.bottom, 60)
             }
+            
+            // Completion Celebration View
+            if showCompletionView {
+                TimerCompletionView(
+                    todo: todo,
+                    actualMinutes: completedActualMinutes,
+                    isPresented: $showCompletionView
+                )
+                .transition(.opacity)
+                .zIndex(1)
+                .onChange(of: showCompletionView) { oldValue, newValue in
+                    if !newValue {
+                        // 축하 화면이 닫힌 후 타이머 화면도 닫기
+                        isPresented = false
+                    }
+                }
+            }
         }
     }
 
@@ -267,12 +288,13 @@ struct TimerView: View {
         
         // 실제로 작업한 시간(분) 계산
         let actualMinutes = Int(ceil(Double(elapsedSeconds) / 60.0))
+        completedActualMinutes = actualMinutes
         
         // 완료 콜백 호출
         onComplete?(todo, actualMinutes)
         
-        // 완료 처리 로직 추가 가능
-        isPresented = false
+        // 축하 화면 표시
+        showCompletionView = true
     }
     
     // MARK: - Background Support
