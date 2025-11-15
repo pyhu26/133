@@ -17,6 +17,9 @@ struct SettingsView: View {
     @State private var showShareSheet = false
     @State private var exportError: String?
     @State private var showErrorAlert = false
+    @State private var showAppInfo = false
+    @State private var showTermsOfService = false
+    @State private var showPrivacyPolicy = false
 
     var body: some View {
         ZStack {
@@ -120,28 +123,25 @@ struct SettingsView: View {
                                 title: "앱 정보",
                                 description: "버전 1.0.0"
                             ) {
-                                // TODO: 앱 정보 페이지
-                                print("앱 정보")
+                                showAppInfo = true
                             }
 
                             SettingNavigationItem(
                                 icon: "doc.text.fill",
-                                iconColor: .mediumGray,
+                                iconColor: .adaptiveSecondaryText,
                                 title: "이용약관",
                                 description: nil
                             ) {
-                                // TODO: 이용약관 페이지
-                                print("이용약관")
+                                showTermsOfService = true
                             }
 
                             SettingNavigationItem(
                                 icon: "lock.fill",
-                                iconColor: .mediumGray,
+                                iconColor: .adaptiveSecondaryText,
                                 title: "개인정보 처리방침",
                                 description: nil
                             ) {
-                                // TODO: 개인정보 처리방침 페이지
-                                print("개인정보 처리방침")
+                                showPrivacyPolicy = true
                             }
                         }
                     }
@@ -203,6 +203,15 @@ struct SettingsView: View {
         .sheet(isPresented: $showEditProfile) {
             @Bindable var bindableSettings = settingsManager
             EditProfileView(settingsManager: settingsManager, isPresented: $showEditProfile)
+        }
+        .sheet(isPresented: $showAppInfo) {
+            AppInfoView()
+        }
+        .sheet(isPresented: $showTermsOfService) {
+            TermsOfServiceView()
+        }
+        .sheet(isPresented: $showPrivacyPolicy) {
+            PrivacyPolicyView()
         }
     }
     
