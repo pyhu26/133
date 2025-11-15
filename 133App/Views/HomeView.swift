@@ -147,7 +147,7 @@ struct GreetingHeaderView: View {
 
             Text(viewModel.getGreeting(userName: userName).subtitle)
                 .textStyle(.bodySmall)
-                .foregroundColor(.mediumGray)
+                .foregroundColor(.adaptiveSecondaryText)
         }
         .frame(maxWidth: .infinity)
     }
@@ -194,11 +194,11 @@ struct TodoListView: View {
 struct EmptyTodoSlot: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .fill(Color.white.opacity(0.5))
+            .fill(Color.adaptiveCardBackground.opacity(0.5))
             .frame(height: 80)
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color.borderGray, style: StrokeStyle(lineWidth: 2, dash: [8, 4]))
+                    .stroke(Color.adaptiveBorder, style: StrokeStyle(lineWidth: 2, dash: [8, 4]))
             )
     }
 }
@@ -254,7 +254,7 @@ struct EncouragementCard: View {
             .frame(maxWidth: .infinity)
             .padding(Spacing.cardInternal)
             .background(
-                Color.warmBeige
+                Color.adaptiveSecondaryBackground
                     .opacity(0.6)
             )
             .largeRadius()

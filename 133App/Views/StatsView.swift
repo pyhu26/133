@@ -79,7 +79,7 @@ struct WeekProgressCard: View {
 
                 Text(dateRangeText)
                     .textStyle(.caption)
-                    .foregroundColor(.mediumGray)
+                    .foregroundColor(.adaptiveSecondaryText)
             }
 
             // Day Dots
@@ -101,15 +101,15 @@ struct WeekProgressCard: View {
 
                 Text("\(weeklyStats.completedDaysCount)일 실천했어요!")
                     .textStyle(.bodyLarge)
-                    .foregroundColor(.deepWarmGray)
+                    .foregroundColor(.adaptiveText)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, Spacing.md)
-            .background(Color.warmBeige.opacity(0.4))
+            .background(Color.adaptiveSecondaryBackground.opacity(0.4))
             .mediumRadius()
         }
         .padding(Spacing.cardInternalLarge)
-        .background(Color.white)
+        .background(Color.adaptiveCardBackground)
         .xLargeRadius()
         .lightShadow()
     }
@@ -137,8 +137,8 @@ struct DayDot: View {
                 Circle()
                     .fill(
                         isCompleted ? AnyShapeStyle(Color.peachGradient) :
-                        isToday ? AnyShapeStyle(Color.white) :
-                        AnyShapeStyle(Color.borderGray)
+                        isToday ? AnyShapeStyle(Color.adaptiveCardBackground) :
+                        AnyShapeStyle(Color.adaptiveBorder)
                     )
                     .frame(width: 40, height: 40)
                     .overlay(
@@ -163,7 +163,7 @@ struct DayDot: View {
 
             Text(day)
                 .font(.system(size: 11, weight: .semibold))
-                .foregroundColor(isToday ? .softPeach : .mediumGray)
+                .foregroundColor(isToday ? .softPeach : .adaptiveSecondaryText)
         }
     }
 }
@@ -234,17 +234,17 @@ struct StatCard: View {
             // Value
             Text(value)
                 .font(.statsValue)
-                .foregroundColor(.deepWarmGray)
+                .foregroundColor(.adaptiveText)
 
             // Label
             Text(label)
                 .textStyle(.caption)
-                .foregroundColor(.mediumGray)
+                .foregroundColor(.adaptiveSecondaryText)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
         .padding(Spacing.xl)
-        .background(Color.white)
+        .background(Color.adaptiveCardBackground)
         .largeRadius()
         .lightShadow()
     }
@@ -286,7 +286,7 @@ struct WeeklyTimeline: View {
             }
         }
         .padding(Spacing.cardInternalLarge)
-        .background(Color.white)
+        .background(Color.adaptiveCardBackground)
         .largeRadius()
         .lightShadow()
     }
@@ -307,17 +307,17 @@ struct TimelineRow: View {
         HStack(spacing: Spacing.md) {
             // Dot
             Circle()
-                .fill(item.isCompleted ? Color.softPeach : Color.borderGray)
+                .fill(item.isCompleted ? Color.softPeach : Color.adaptiveBorder)
                 .frame(width: 12, height: 12)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.title)
                     .textStyle(.bodyLarge)
-                    .foregroundColor(.deepWarmGray)
+                    .foregroundColor(.adaptiveText)
 
                 Text("\(item.date) · \(item.time)")
                     .textStyle(.captionSmall)
-                    .foregroundColor(.mediumGray)
+                    .foregroundColor(.adaptiveSecondaryText)
             }
 
             Spacer()

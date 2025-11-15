@@ -64,24 +64,24 @@ struct TimerCompletionView: View {
                 // Todo Title
                 Text(todo.title)
                     .textStyle(.headingLarge)
-                    .foregroundColor(.deepWarmGray)
+                    .foregroundColor(.adaptiveText)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, Spacing.xl)
                     .scaleEffect(scale)
                     .opacity(opacity)
-                
+
                 // Time Info
                 VStack(spacing: Spacing.sm) {
                     HStack(spacing: Spacing.xs) {
                         Image(systemName: "clock.fill")
                             .font(.system(size: 16))
                             .foregroundColor(.softPeach)
-                        
+
                         Text("집중 시간")
                             .textStyle(.bodySmall)
-                            .foregroundColor(.mediumGray)
+                            .foregroundColor(.adaptiveSecondaryText)
                     }
-                    
+
                     Text("\(actualMinutes)분")
                         .font(.system(size: 48, weight: .bold, design: .rounded))
                         .foregroundColor(.softPeach)
@@ -90,16 +90,16 @@ struct TimerCompletionView: View {
                 .padding(.horizontal, Spacing.xl)
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.white)
+                        .fill(Color.adaptiveCardBackground)
                         .shadow(color: Color.black.opacity(0.05), radius: 10, y: 5)
                 )
                 .scaleEffect(scale)
                 .opacity(opacity)
-                
+
                 // Encouragement Message
                 Text(randomMessage)
                     .textStyle(.headingMedium)
-                    .foregroundColor(.deepWarmGray)
+                    .foregroundColor(.adaptiveText)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, Spacing.xl)
                     .offset(y: messageOffset)

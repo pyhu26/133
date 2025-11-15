@@ -34,7 +34,7 @@ struct AddTodoView: View {
                 VStack(spacing: Spacing.xl) {
                     // Handle Bar
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.lightGray)
+                        .fill(Color.adaptiveTertiaryText)
                         .frame(width: 36, height: 4)
                         .padding(.top, Spacing.md)
 
@@ -45,7 +45,7 @@ struct AddTodoView: View {
 
                         Text("오늘 하고 싶은 일을 적어보세요")
                             .textStyle(.bodySmall)
-                            .foregroundColor(.mediumGray)
+                            .foregroundColor(.adaptiveSecondaryText)
                     }
 
                     // Form

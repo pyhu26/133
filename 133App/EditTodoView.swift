@@ -44,7 +44,7 @@ struct EditTodoView: View {
                 VStack(spacing: Spacing.xl) {
                     // Handle Bar
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.lightGray)
+                        .fill(Color.adaptiveTertiaryText)
                         .frame(width: 36, height: 4)
                         .padding(.top, Spacing.md)
 
@@ -55,7 +55,7 @@ struct EditTodoView: View {
 
                         Text("내용을 수정하세요")
                             .textStyle(.bodySmall)
-                            .foregroundColor(.mediumGray)
+                            .foregroundColor(.adaptiveSecondaryText)
                     }
 
                     // Form
@@ -143,7 +143,7 @@ struct EditTodoView: View {
                     // Info
                     Text("완료된 할일은 수정할 수 없어요")
                         .textStyle(.caption)
-                        .foregroundColor(.mediumGray)
+                        .foregroundColor(.adaptiveSecondaryText)
                 }
                 .padding(Spacing.xl)
                 .background(

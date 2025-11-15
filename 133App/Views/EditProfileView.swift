@@ -63,18 +63,18 @@ struct EditProfileView: View {
                 VStack(spacing: Spacing.xl) {
                     // Handle Bar
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.lightGray)
+                        .fill(Color.adaptiveTertiaryText)
                         .frame(width: 36, height: 4)
                         .padding(.top, Spacing.md)
-                    
+
                     // Header
                     VStack(spacing: Spacing.xs) {
                         Text("프로필 편집")
                             .textStyle(.headingMedium)
-                        
+
                         Text("이름과 아이콘을 수정하세요")
                             .textStyle(.bodySmall)
-                            .foregroundColor(.mediumGray)
+                            .foregroundColor(.adaptiveSecondaryText)
                     }
                     
                     // Profile Avatar

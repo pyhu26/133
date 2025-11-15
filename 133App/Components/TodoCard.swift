@@ -29,8 +29,8 @@ struct TodoCard: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text(todo.title)
                     .textStyle(.bodyLarge)
-                    .strikethrough(todo.isCompleted, color: .mediumGray)
-                    .foregroundColor(todo.isCompleted ? .mediumGray : .deepWarmGray)
+                    .strikethrough(todo.isCompleted, color: .adaptiveSecondaryText)
+                    .foregroundColor(todo.isCompleted ? .adaptiveSecondaryText : .adaptiveText)
 
                 HStack(spacing: 4) {
                     Image(systemName: "clock")
@@ -39,12 +39,12 @@ struct TodoCard: View {
                     Text("\(todo.estimatedMinutes)분")
                         .textStyle(.caption)
                 }
-                .foregroundColor(.mediumGray)
+                .foregroundColor(.adaptiveSecondaryText)
 
                 if let memo = todo.memo, !memo.isEmpty {
                     Text(memo)
                         .textStyle(.captionSmall)
-                        .foregroundColor(.lightGray)
+                        .foregroundColor(.adaptiveTertiaryText)
                         .lineLimit(2)
                 }
             }
