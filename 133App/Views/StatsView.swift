@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct StatsView: View {
-    @State private var viewModel = TodoViewModel()
-    
+    @Environment(TodoViewModel.self) private var viewModel
+
     var body: some View {
         ZStack {
             // Background

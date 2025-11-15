@@ -17,9 +17,19 @@ class TodoViewModel {
     /// 하루 최대 할 일 개수
     private let maxTodos = 3
 
+    /// Debounce를 위한 Task 저장
+    private var saveTask: Task<Void, Never>?
+    private var updateStatsTask: Task<Void, Never>?
+
     init() {
         loadTodos()
         updateStats()
+    }
+
+    deinit {
+        // Task 정리
+        saveTask?.cancel()
+        updateStatsTask?.cancel()
     }
 
     // MARK: - Computed Properties
@@ -180,7 +190,28 @@ class TodoViewModel {
         return "todos_\(dateFormatter.string(from: Date()))"
     }
 
+    /// Debounced save - 0.5초 후에 저장 (빠른 연속 변경 시 성능 개선)
     private func saveTodos() {
+        // 기존 저장 작업 취소
+        saveTask?.cancel()
+
+        // 새로운 저장 작업 예약
+        saveTask = Task { @MainActor in
+            // 0.5초 대기
+            try? await Task.sleep(nanoseconds: 500_000_000)
+
+            // Task가 취소되지 않았으면 저장
+            guard !Task.isCancelled else { return }
+
+            if let encoded = try? JSONEncoder().encode(todos) {
+                UserDefaults.standard.set(encoded, forKey: todosKey)
+            }
+        }
+    }
+
+    /// 즉시 저장 (앱 종료 시 등 중요한 경우)
+    func saveImmediately() {
+        saveTask?.cancel()
         if let encoded = try? JSONEncoder().encode(todos) {
             UserDefaults.standard.set(encoded, forKey: todosKey)
         }
@@ -202,9 +233,27 @@ class TodoViewModel {
     }
     
     // MARK: - Stats
-    
-    /// 통계 업데이트
+
+    /// Debounced 통계 업데이트 - 0.3초 후에 업데이트 (빠른 연속 변경 시 성능 개선)
     private func updateStats() {
+        // 기존 업데이트 작업 취소
+        updateStatsTask?.cancel()
+
+        // 새로운 업데이트 작업 예약
+        updateStatsTask = Task { @MainActor in
+            // 0.3초 대기
+            try? await Task.sleep(nanoseconds: 300_000_000)
+
+            // Task가 취소되지 않았으면 업데이트
+            guard !Task.isCancelled else { return }
+
+            statsManager.updateTodayStats(todos: todos)
+        }
+    }
+
+    /// 즉시 통계 업데이트
+    func updateStatsImmediately() {
+        updateStatsTask?.cancel()
         statsManager.updateTodayStats(todos: todos)
     }
 }

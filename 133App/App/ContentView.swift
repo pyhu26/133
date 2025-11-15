@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedTab = 0
     @State private var settingsManager = SettingsManager()
+    @State private var todoViewModel = TodoViewModel()
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -39,6 +40,7 @@ struct ContentView: View {
         }
         .accentColor(.softPeach)
         .environment(settingsManager)
+        .environment(todoViewModel)
         .preferredColorScheme(settingsManager.darkModeEnabled ? .dark : .light)
     }
 }

@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var viewModel = TodoViewModel()
-    @State private var settingsManager = SettingsManager()
+    @Environment(TodoViewModel.self) private var viewModel
+    @Environment(SettingsManager.self) private var settingsManager
     @State private var showAddTodo = false
     @State private var showTimer = false
     @State private var selectedTodo: TodoItem?
