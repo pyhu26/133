@@ -11,9 +11,12 @@ struct ContentView: View {
     @State private var selectedTab = 0
     @State private var settingsManager = SettingsManager()
     @State private var todoViewModel = TodoViewModel()
+    @State private var showLaunchScreen = true
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        ZStack {
+            // Main TabView
+            TabView(selection: $selectedTab) {
             // Home Tab
             HomeView()
                 .tabItem {
@@ -37,11 +40,27 @@ struct ContentView: View {
                     Text("설정")
                 }
                 .tag(2)
+            }
+            .accentColor(.softPeach)
+            .environment(settingsManager)
+            .environment(todoViewModel)
+            .preferredColorScheme(settingsManager.darkModeEnabled ? .dark : .light)
+
+            // Launch Screen Overlay
+            if showLaunchScreen {
+                LaunchView()
+                    .transition(.opacity)
+                    .zIndex(1)
+            }
         }
-        .accentColor(.softPeach)
-        .environment(settingsManager)
-        .environment(todoViewModel)
-        .preferredColorScheme(settingsManager.darkModeEnabled ? .dark : .light)
+        .onAppear {
+            // 2초 후 런치 스크린 숨기기
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+                withAnimation(.easeOut(duration: 1.5)) {
+                    showLaunchScreen = false
+                }
+            }
+        }
     }
 }
 
