@@ -79,7 +79,7 @@
   - 1290 x 2796 pixels
   - 3-10장 필요
   
-- [ ] **iPhone 6.5" (iPhone 11 Pro Max)** - 필수
+- [*] **iPhone 6.5" (iPhone 11 Pro Max)** - 필수
   - 1242 x 2688 pixels
   - 3-10장 필요
 
@@ -95,18 +95,21 @@
   - 주요 기능 시연
 
 #### 앱 아이콘
-- [ ] **App Icon 준비**
+- [*] **App Icon 준비**
   - 1024 x 1024 pixels (App Store용)
   - 다양한 크기 자동 생성 확인
   - 투명도 없이, 정사각형
   - 권장: 단순하고 인식하기 쉬운 디자인
+  
+  > chatgpt로 이미지 만들고 https://theapplaunchpad.com/app-icon-generator?utm_source=chatgpt.com 에서 아이콘 세트 생성
+  > 아이콘세트르 생성했으나 xocde 최신 버전은 1024 버전만 있으면 나머지는 빌드할때 자동으로 생성함
 
 ---
 
 ### 2️⃣ 개발자 계정 및 인증서 설정
 
-- [ ] **Apple Developer Program 가입** ($99/년)
-  - https://developer.apple.com/programs/
+- [*] **Apple Developer Program 가입** ($99/년)
+- https://developer.apple.com/programs/
 
 - [ ] **App ID 등록**
   - Bundle Identifier 설정
