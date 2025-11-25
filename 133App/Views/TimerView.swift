@@ -69,107 +69,109 @@ struct TimerView: View {
     }
 
     var body: some View {
-        ZStack {
-            // Animated Gradient Background
-            AnimatedGradientBackground()
-                .ignoresSafeArea()
+        GeometryReader { geometry in
+            ZStack {
+                // Animated Gradient Background
+                AnimatedGradientBackground()
+                    .ignoresSafeArea()
 
-            VStack(spacing: Spacing.xxxl) {
-                // Close Button
-                HStack {
-                    Button(action: {
-                        stopTimer()
-                        isPresented = false
-                    }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 24, weight: .semibold))
-                            .foregroundColor(.white)
-                            .frame(width: 44, height: 44)
-                            .background(
-                                Circle()
-                                    .fill(Color.white.opacity(0.2))
-                                    .blur(radius: 10)
-                            )
+                VStack(spacing: adaptiveSpacing(for: geometry.size.height)) {
+                    // Close Button
+                    HStack {
+                        Button(action: {
+                            stopTimer()
+                            isPresented = false
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 24, weight: .semibold))
+                                .foregroundColor(.white)
+                                .frame(width: 44, height: 44)
+                                .background(
+                                    Circle()
+                                        .fill(Color.white.opacity(0.2))
+                                        .blur(radius: 10)
+                                )
+                        }
+                        .buttonStyle(PlainButtonStyle())
+
+                        Spacer()
                     }
-                    .buttonStyle(PlainButtonStyle())
+                    .padding(.horizontal, Spacing.screenHorizontal)
+                    .padding(.top, geometry.safeAreaInsets.top + 20)
 
                     Spacer()
-                }
-                .padding(.horizontal, Spacing.screenHorizontal)
-                .padding(.top, 60)
 
-                Spacer()
+                    // Todo Title
+                    Text(todo.title)
+                        .textStyle(.headingLarge)
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, Spacing.screenHorizontal)
 
-                // Todo Title
-                Text(todo.title)
-                    .textStyle(.headingLarge)
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, Spacing.screenHorizontal)
+                    // Progress Ring with Timer
+                    ZStack {
+                        ProgressRing(
+                            progress: progress,
+                            size: adaptiveRingSize(for: geometry.size),
+                            lineWidth: 12
+                        )
 
-                // Progress Ring with Timer
-                ZStack {
-                    ProgressRing(
-                        progress: progress,
-                        size: 280,
-                        lineWidth: 12
-                    )
+                        VStack(spacing: 8) {
+                            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                                Text(String(format: "%02d:%02d", minutes, seconds))
+                                    .font(.timerLarge)
+                                    .foregroundColor(.white)
+                                    .shadow(color: Color.black.opacity(0.1), radius: 10, y: 4)
+                            }
 
-                    VStack(spacing: 8) {
-                        HStack(alignment: .firstTextBaseline, spacing: 4) {
-                            Text(String(format: "%02d:%02d", minutes, seconds))
-                                .font(.timerLarge)
-                                .foregroundColor(.white)
-                                .shadow(color: Color.black.opacity(0.1), radius: 10, y: 4)
-                        }
-
-                        if progress >= 1.0 {
-                            Text("완료!")
-                                .font(.timerUnit)
-                                .foregroundColor(.white.opacity(0.9))
-                        }
-                    }
-                }
-
-                // Encouragement Message
-                Text(encouragementMessage)
-                    .textStyle(.headingSmall)
-                    .foregroundColor(.white.opacity(0.9))
-                    .padding(.horizontal, Spacing.screenHorizontal)
-
-                Spacer()
-
-                // Control Buttons
-                HStack(spacing: Spacing.xl) {
-                    // Reset Button
-                    TimerControlButton(
-                        icon: "arrow.counterclockwise",
-                        isPrimary: false
-                    ) {
-                        resetTimer()
-                    }
-
-                    // Play/Pause Button
-                    TimerControlButton(
-                        icon: isRunning ? "pause.fill" : "play.fill",
-                        isPrimary: true
-                    ) {
-                        if isRunning {
-                            pauseTimer()
-                        } else {
-                            startTimer()
+                            if progress >= 1.0 {
+                                Text("완료!")
+                                    .font(.timerUnit)
+                                    .foregroundColor(.white.opacity(0.9))
+                            }
                         }
                     }
 
-                    // Complete Button
-                    TimerControlButton(
-                        icon: "checkmark",
-                        isPrimary: false
-                    ) {
-                        completeTask()
+                    // Encouragement Message
+                    Text(encouragementMessage)
+                        .textStyle(.headingSmall)
+                        .foregroundColor(.white.opacity(0.9))
+                        .padding(.horizontal, Spacing.screenHorizontal)
+
+                    Spacer()
+
+                    // Control Buttons
+                    HStack(spacing: Spacing.xl) {
+                        // Reset Button
+                        TimerControlButton(
+                            icon: "arrow.counterclockwise",
+                            isPrimary: false
+                        ) {
+                            resetTimer()
+                        }
+
+                        // Play/Pause Button
+                        TimerControlButton(
+                            icon: isRunning ? "pause.fill" : "play.fill",
+                            isPrimary: true
+                        ) {
+                            if isRunning {
+                                pauseTimer()
+                            } else {
+                                startTimer()
+                            }
+                        }
+
+                        // Complete Button
+                        TimerControlButton(
+                            icon: "checkmark",
+                            isPrimary: false
+                        ) {
+                            completeTask()
+                        }
                     }
+                    .padding(.bottom, max(geometry.safeAreaInsets.bottom + 30, 40))
                 }
-                .padding(.bottom, 60)
             }
             
             // Completion Celebration View
@@ -188,6 +190,34 @@ struct TimerView: View {
                     }
                 }
             }
+        }
+    }
+
+    // MARK: - Adaptive Layout Helpers
+
+    /// 화면 높이에 따라 적응형 spacing 반환
+    private func adaptiveSpacing(for height: CGFloat) -> CGFloat {
+        // iPhone 화면 높이: ~667-932
+        // iPad 화면 높이: ~1024-1366
+        if height > 1000 {
+            // iPad 크기
+            return Spacing.xxxl * 1.5 // 60pt
+        } else {
+            // iPhone 크기
+            return Spacing.xxxl // 40pt
+        }
+    }
+
+    /// 화면 크기에 따라 적응형 링 크기 반환
+    private func adaptiveRingSize(for size: CGSize) -> CGFloat {
+        let minDimension = min(size.width, size.height)
+
+        if minDimension > 1000 {
+            // iPad 크기 - 더 큰 링
+            return min(350, minDimension * 0.45)
+        } else {
+            // iPhone 크기
+            return min(280, minDimension * 0.5)
         }
     }
 

@@ -35,7 +35,7 @@ struct StatsView: View {
                     // Weekly Timeline (Optional)
                     // WeeklyTimeline()
 
-                    Spacer(minLength: Spacing.screenBottom)
+                    Spacer(minLength: Spacing.screenBottom + 20)
                 }
                 .padding(.horizontal, Spacing.screenHorizontal)
             }

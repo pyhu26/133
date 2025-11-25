@@ -163,7 +163,7 @@ struct SettingsView: View {
                     }
                     .padding(.vertical, Spacing.xl)
 
-                    Spacer(minLength: Spacing.screenBottom)
+                    Spacer(minLength: Spacing.screenBottom + 20)
                 }
                 .padding(.horizontal, Spacing.screenHorizontal)
             }

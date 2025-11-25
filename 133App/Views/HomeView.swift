@@ -67,7 +67,7 @@ struct HomeView: View {
                         EncouragementCard(message: viewModel.getEncouragementMessage())
                     }
 
-                    Spacer(minLength: Spacing.screenBottom)
+                    Spacer(minLength: Spacing.screenBottom + 20)
                 }
                 .padding(.horizontal, Spacing.screenHorizontal)
             }
