@@ -170,7 +170,7 @@ struct TimerView: View {
                             completeTask()
                         }
                     }
-                    .padding(.bottom, max(geometry.safeAreaInsets.bottom + 30, 40))
+                    .padding(.bottom, max(geometry.safeAreaInsets.bottom + 50, 60))
                 }
             }
             
