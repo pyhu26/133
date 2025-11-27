@@ -75,7 +75,7 @@ struct TimerView: View {
                 AnimatedGradientBackground()
                     .ignoresSafeArea()
 
-                VStack(spacing: adaptiveSpacing(for: geometry.size.height)) {
+                VStack(spacing: 0) {
                     // Close Button
                     HStack {
                         Button(action: {
@@ -97,7 +97,7 @@ struct TimerView: View {
                         Spacer()
                     }
                     .padding(.horizontal, Spacing.screenHorizontal)
-                    .padding(.top, geometry.safeAreaInsets.top + 20)
+                    .padding(.top, max(geometry.safeAreaInsets.top + 20, 40))
 
                     Spacer()
 
@@ -107,6 +107,7 @@ struct TimerView: View {
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, Spacing.screenHorizontal)
+                        .padding(.bottom, adaptiveSpacing(for: geometry.size.height))
 
                     // Progress Ring with Timer
                     ZStack {
@@ -137,6 +138,7 @@ struct TimerView: View {
                         .textStyle(.headingSmall)
                         .foregroundColor(.white.opacity(0.9))
                         .padding(.horizontal, Spacing.screenHorizontal)
+                        .padding(.top, adaptiveSpacing(for: geometry.size.height))
 
                     Spacer()
 
@@ -170,8 +172,9 @@ struct TimerView: View {
                             completeTask()
                         }
                     }
-                    .padding(.bottom, max(geometry.safeAreaInsets.bottom + 50, 60))
+                    .padding(.bottom, max(geometry.safeAreaInsets.bottom, 20) + 80)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             
             // Completion Celebration View
