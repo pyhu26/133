@@ -1,7 +1,20 @@
 {
   "permissions": {
     "allow": [
-      "Bash(xcodebuild:*)"
+      "Bash(xcodebuild:*)",
+      "Bash(gh issue create:*)",
+      "Bash(xcrun simctl:*)",
+      "Read(//tmp/**)",
+      "Bash(git add:*)",
+      "Bash(git restore:*)",
+      "Bash(git commit:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh issue close:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(gh api:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []
