@@ -11,7 +11,6 @@ struct TodoCard: View {
     let todo: TodoItem
     let onToggle: () -> Void
     var onTap: (() -> Void)? = nil
-    var onEdit: (() -> Void)? = nil
     var onDelete: (() -> Void)? = nil
 
     @State private var isPressed = false
@@ -67,24 +66,13 @@ struct TodoCard: View {
         .scaleEffect(isPressed ? 0.98 : 1.0)
         .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
         .opacity(todo.isCompleted ? 0.6 : 1.0)
-        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+        .contextMenu {
             // 삭제 버튼
             Button(role: .destructive) {
                 HapticManager.shared.medium()
                 onDelete?()
             } label: {
                 Label("삭제", systemImage: "trash")
-            }
-            
-            // 편집 버튼
-            if !todo.isCompleted {
-                Button {
-                    HapticManager.shared.light()
-                    onEdit?()
-                } label: {
-                    Label("편집", systemImage: "pencil")
-                }
-                .tint(.orange)
             }
         }
         .onTapGesture {
